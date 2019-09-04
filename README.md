@@ -1,4 +1,4 @@
-[![Go Report](https://goreportcard.com/badge/github.com/cboxed/servant)](https://goreportcard.com/badge/github.com/cboxed/servant)
+[![Go Report](https://goreportcard.com/badge/github.com/cboxed/servant)](https://goreportcard.com/report/github.com/cboxed/servant)
 
 # Servant
 
