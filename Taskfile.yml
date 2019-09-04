@@ -1,0 +1,13 @@
+version: '2'
+
+tasks:
+  clean:
+    cmds:
+      - rm -rf build
+      - rm -f server.pem server.key
+      - go mod tidy
+    silent: true
+  test:
+    cmds:
+      - go test -cover
+    silent: true
