@@ -4,9 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
-	"github.com/cboxed/servant/utils"
 	"strconv"
 	"strings"
+
+	"github.com/cboxed/servant/utils"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -16,6 +17,7 @@ type Config struct {
 	Host     string
 	Port     int
 	Loglevel string
+	TLS      bool
 	CertPath string
 	KeyPath  string
 }
@@ -46,8 +48,6 @@ func (s *Servant) prepareCerts() {
 // Summon starts the servant instance to listen
 func (s *Servant) Summon() {
 
-	s.prepareCerts()
-
 	router := mux.NewRouter()
 
 	// setup routes based on routes config
@@ -64,7 +64,17 @@ func (s *Servant) Summon() {
 	hostPort := s.config.Host + ":" + strconv.Itoa(s.config.Port)
 
 	log.Info("listen on " + hostPort)
-	log.Fatal(http.ListenAndServeTLS(hostPort, s.config.CertPath, s.config.KeyPath, router))
+
+	if s.config.TLS {
+		// TLS is enabled
+		log.Info("TLS enabled")
+		s.prepareCerts()
+		log.Fatal(http.ListenAndServeTLS(hostPort, s.config.CertPath, s.config.KeyPath, router))
+	} else {
+		// TLS is disabled
+		log.Info("TLS disabled")
+		log.Fatal(http.ListenAndServe(hostPort, router))
+	}
 }
 
 func (s *Servant) defaultHandler(w http.ResponseWriter, r *http.Request) {
