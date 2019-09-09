@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/cboxed/servant/utils"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -69,11 +70,11 @@ func (s *Servant) Summon() {
 		// TLS is enabled
 		log.Info("TLS enabled")
 		s.prepareCerts()
-		log.Fatal(http.ListenAndServeTLS(hostPort, s.config.CertPath, s.config.KeyPath, router))
+		log.Fatal(http.ListenAndServeTLS(hostPort, s.config.CertPath, s.config.KeyPath, handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(router)))
 	} else {
 		// TLS is disabled
 		log.Info("TLS disabled")
-		log.Fatal(http.ListenAndServe(hostPort, router))
+		log.Fatal(http.ListenAndServe(hostPort, handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(router)))
 	}
 }
 
